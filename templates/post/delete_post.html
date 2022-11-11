@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<form method="post">{% csrf_token %}
+  <p>Are you sure you want to delete "{{ object }}"?</p>
+  <input type="submit" value="Confirm" class="btn btn-secondary">
+  <button class="btn btn-secondary"><a href="{% url 'posts' %}">Back</a></button>
+</form>
+{% comment %} <div class="card ms-5"  style="width: 70%;">
+  <div class="card-header text-center" >
+    <strong>Edit Post</strong>
+  </div>
+  <div class="card-body">
+    <div class="form-group">
+      <form method="post">
+        {% csrf_token %}
+        {{form.media}}
+        {{ form.as_p}}
+        <button class="btn btn-secondary">Edit</button>
+    </div>
+  </div>
+</div> {% endcomment %}
+{% endblock  %}

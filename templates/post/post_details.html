@@ -5,5 +5,8 @@
 <small>{{post.author}}</small>
 <hr>
 <p>{{post.content|safe}}</p>
-
+<small>
+  <a href="{% url 'update_post' post.pk %}">Edit </a> -
+  <a href="{% url 'delete_post' post.pk %}">Delete </a>
+</small>
 {% endblock content %}
