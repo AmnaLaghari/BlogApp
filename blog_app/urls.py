@@ -20,5 +20,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('UserApp.urls')),
+    path('posts/',include('PostApp.urls')),
+    path('djrichtextfield/', include('djrichtextfield.urls'))
 ]
 urlpatterns += staticfiles_urlpatterns()

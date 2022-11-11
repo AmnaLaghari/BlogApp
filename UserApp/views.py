@@ -71,7 +71,7 @@ class Signin(View):
       login(request,user)
       fname = user.username
       messages.error(request, "You have logged in successfully")
-      return render(request, 'UserApp/index.html', {'fname': fname})
+      return redirect('posts')
     else:
       messages.error(request, "Bad credentials")
       return redirect('home')
