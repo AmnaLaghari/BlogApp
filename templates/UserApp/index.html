@@ -4,9 +4,6 @@
 {% if user.is_authenticated%}
 <h4>hello {{fname}}</h4>
 <p>your are successfully logged in</p>
-<button type = 'submit'><a href="/signout">Signout</a></button>
-{% else %}
-<button type='submit' class="btn btn-secondary"><a href="/signup" class="list-group-item">Signup</a></button>
-<button type='submit'class="btn btn-secondary"><a href="/signin" class="list-group-item">Signin</a></button>
+<button type = 'submit' class="btn btn-secondary"><a href="/signout">Signout</a></button>
 {% endif %}
 {% endblock %}

@@ -135,3 +135,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_PASSWORD = 'aunyunapxmkhhvbk '
 
 AUTH_USER_MODEL = 'UserApp.CustomUser'
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]

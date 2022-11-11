@@ -1,0 +1,23 @@
+.logo{
+  width: 5rem;
+  height: 4rem;
+}
+.home_image{
+  width: 50rem;
+}
+
+.btn{
+  background-color: #FCE0CB;
+  outline: #f9ab6f;
+  text-decoration: none!important;
+  color: black;
+}
+
+.btn:hover{
+  background-color: #f9ab6f;
+}
+
+a:link {
+  text-decoration: none;
+  color: black!important;
+}

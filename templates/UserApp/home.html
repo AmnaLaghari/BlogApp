@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="row">
+  <div class="col-8">
+    <img src="{% static "UserApp/media/home.png" %}" alt="home" class="home_image"/>
+  </div>
+  <div class="col-4 mt-5">
+    <div class="card mt-5" style="width: 15rem;">
+      <div class="card-body text-center">
+        <button type='submit' class="btn btn-secondary"><a href="/signup" class="list-group-item">Signup</a></button><br><hr>
+        <button type='submit'class="btn btn-secondary"><a href="/signin" class="list-group-item">Signin</a></button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

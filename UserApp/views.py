@@ -16,7 +16,7 @@ from . import models
 
 # Create your views here.
 def home(request):
-  return render(request, 'UserApp/index.html')
+  return render(request, 'UserApp/home.html')
 
 
 class Signup(View):
