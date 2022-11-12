@@ -24,3 +24,5 @@ urlpatterns = [
     path('djrichtextfield/', include('djrichtextfield.urls'))
 ]
 urlpatterns += staticfiles_urlpatterns()
+
+handler404 = 'PostApp.views.handler404'

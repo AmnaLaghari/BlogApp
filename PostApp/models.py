@@ -3,7 +3,6 @@ from UserApp.models import CustomUser
 from django.urls import reverse
 from ckeditor.fields import RichTextField
 
-# Create your models here.
 class Post(models.Model):
   title = models.CharField(max_length=255)
   content = RichTextField()

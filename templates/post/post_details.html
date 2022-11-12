@@ -5,8 +5,10 @@
 <small>{{post.author}}</small>
 <hr>
 <p>{{post.content|safe}}</p>
+{% if request.user == post.author %}
 <small>
   <a href="{% url 'update_post' post.pk %}">Edit </a> -
   <a href="{% url 'delete_post' post.pk %}">Delete </a>
 </small>
+{% endif %}
 {% endblock content %}
