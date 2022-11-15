@@ -4,21 +4,58 @@
 <h3>Welcome to my app</h3>
 {% if request.user.is_authenticated%}
   <h4>hello {{request.user.username}}</h4>
-  {% if user|get_role == 'moderator'%}
-    <p>you are moderator</p>
-    <h3>Un Approved posts</h3>
-    {% for post in posts %}
-      {% if post|is_pending %}
-        <div class="card mt-5">
-        <div class="card-body">
-          <h3>Title: {{post.title|safe}}</h3>
-          <small>Author: {{post.author}}</small>
-          <p>content: {{post.content|safe}}</p>
-          <button class="btn btn-secondary"><a href="{% url 'approval' post.pk %}">approve</a></button>
+  {% if user|is_moderator%}
+    <div class="row">
+      <div class="col-6">
+        <div class="card">
+          <div class="card-header text-center">
+            Unapproved posts
+          </div>
+          <div class="card-body">
+            {% for post in posts%}
+            {% if post|is_pending %}
+            <div class="card">
+              <div class="card-body">
+                <h3>Title: {{post.title|safe}}</h3>
+                <small>Author: {{post.author}}</small>
+                <p>content: {{post.content|safe}}</p>
+                <button class="btn btn-secondary"><a href="{% url 'approval' post.pk %}">approve</a></button>
+                <button class="btn btn-secondary"><a href="{% url 'delete_post' post.pk %}">Delete</a></button>
+              </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% if posts|count_pending == 0 %}
+              <p>No post pending for approval</p>
+            {% endif %}
+          </div>
         </div>
+      </div>
+      <div class="col-6">
+        <div class="card">
+          <div class="card-header text-center">
+            Reported posts
+          </div>
+          <div class="card-body">
+            {% for post in posts %}
+              {% if post|is_reported %}
+              <div class="card">
+                <div class="card-body">
+                  <h3>Title: {{post.title|safe}}</h3>
+                  <small>Author: {{post.author}}</small>
+                  <p>content: {{post.content|safe}}</p>
+                  <button class="btn btn-secondary"><a href="{% url 'delete_post' post.pk %}">Delete</a></button>
+                </div>
+              </div>
+              {% endif %}
+            {% endfor %}
+            {% if posts|count_reported == 0 %}
+              <p>No post reported</p>
+            {% endif %}
+          </div>
         </div>
-      {% endif %}
-    {% endfor %}
+      </div>
+    </div>
   {% endif %}
 {% endif %}
 {% endblock %}

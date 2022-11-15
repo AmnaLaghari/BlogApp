@@ -15,16 +15,29 @@ from django.utils.decorators import method_decorator
 from . import models
 from .decorators import unauthenticated_user
 from .forms import SignupForm, SigninForm
-# from django.contrib.auth.models import Group
+from .utils import is_moderator
 
-# Create your views here.
 def home(request):
   return render(request, 'UserApp/home.html')
 
-# def index(request):
-#   posts = Post.objects.all()
-#   return render(request, 'UserApp/index.html')
+def signout(request):
+  logout(request)
+  messages.success(request, "you have logged out successfully")
+  return redirect('home')
 
+def activate(request, uidb64, token):
+  try:
+    uid = force_str(urlsafe_base64_decode(uidb64))
+    myuser = models.CustomUser.objects.get(pk = uid)
+  except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+    myuser = None
+
+  if myuser is not None and generate_token.check_token(myuser, token):
+    myuser.is_active = True
+    myuser.save()
+    return redirect('home')
+  else:
+    return render(request, 'activation_failed.html')
 
 class Signup(View):
   def get(self, request):
@@ -80,27 +93,10 @@ class Signin(View):
     if user is not None:
       login(request,user)
       messages.error(request, "You have logged in successfully")
+      if is_moderator(request.user):
+        return redirect('index')
       return redirect('posts')
     else:
       messages.error(request, "Bad credentials")
       return redirect('home')
 
-
-def signout(request):
-  logout(request)
-  messages.success(request, "you have logged out successfully")
-  return redirect('home')
-
-def activate(request, uidb64, token):
-  try:
-    uid = force_str(urlsafe_base64_decode(uidb64))
-    myuser = models.CustomUser.objects.get(pk = uid)
-  except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-    myuser = None
-
-  if myuser is not None and generate_token.check_token(myuser, token):
-    myuser.is_active = True
-    myuser.save()
-    return redirect('home')
-  else:
-    return render(request, 'activation_failed.html')

@@ -7,6 +7,7 @@ from . import views
 urlpatterns = [
     path('index/', views.index, name='index'),
     path('approve/<int:pk>', views.approval, name='approval'),
+    path('report/<int:pk>', views.report, name='report'),
     path('',login_required(PostListView.as_view(), login_url='signin'), name='posts'),
     path('Add_post', login_required(AddPostView.as_view(), login_url='signin'), name='add_post'),
     path('<int:pk>', login_required(PostDetailView.as_view(), login_url='signin'), name='post_detail'),

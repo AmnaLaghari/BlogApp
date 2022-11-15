@@ -1,6 +1,6 @@
 from django.shortcuts import redirect
 from django.contrib import messages
-from .models import Post
+from UserApp.utils import is_not_moderator
 
 def allowed_users(allowed_roles=[]):
   def decorator(view_func):
@@ -11,7 +11,7 @@ def allowed_users(allowed_roles=[]):
       if group in allowed_roles:
         return view_func(request, *args, **kwargs)
       else:
-        if request.user.groups.all()[0].name != 'moderator':
+        if is_not_moderator(request.user):
           messages.error(request,'You are not authorized to perform this action')
           return redirect('posts')
         else:
