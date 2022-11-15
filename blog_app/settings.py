@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-^)%%8m%0h!c(mip5ob289tq)k5r$ghl(at18r-jz5#ydr%swc+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS =  ['localhost', '127.0.0.1']
 
@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'UserApp',
     'PostApp',
+    "crispy_forms",
+    "crispy_bootstrap5",
 ]
 
 MIDDLEWARE = [
@@ -66,6 +68,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries':{
+            'poll_extras': 'UserApp.templatetags.poll_extras',}
         },
     },
 ]
@@ -141,3 +145,6 @@ AUTH_USER_MODEL = 'UserApp.CustomUser'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"

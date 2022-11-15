@@ -1,14 +1,16 @@
 {% extends 'base.html' %}
+{% load poll_extras %}
 {% block content %}
-
-<h1>{{post.title}}</h1>
-<small>{{post.author}}</small>
-<hr>
-<p>{{post.content|safe}}</p>
-{% if request.user == post.author %}
-<small>
-  <a href="{% url 'update_post' post.pk %}">Edit </a> -
-  <a href="{% url 'delete_post' post.pk %}">Delete </a>
-</small>
+{% if post|is_approved %}
+  <h1>{{post.title}}</h1>
+  <small>{{post.author}}</small>
+  <hr>
+  <p>{{post.content|safe}}</p>
+  {% if request.user|is_author_of_post:post or request.user|is_admin %}
+    <small>
+      <a href="{% url 'update_post' post.pk %}">Edit </a> -
+      <a href="{% url 'delete_post' post.pk %}">Delete </a>
+    </small>
+  {% endif %}
 {% endif %}
 {% endblock content %}

@@ -1,9 +1,24 @@
 {% extends 'base.html' %}
+{% load poll_extras %}
 {% block content %}
 <h3>Welcome to my app</h3>
-{% if user.is_authenticated%}
-<h4>hello {{fname}}</h4>
-<p>your are successfully logged in</p>
-<button type = 'submit' class="btn btn-secondary"><a href="/signout">Signout</a></button>
+{% if request.user.is_authenticated%}
+  <h4>hello {{request.user.username}}</h4>
+  {% if user|get_role == 'moderator'%}
+    <p>you are moderator</p>
+    <h3>Un Approved posts</h3>
+    {% for post in posts %}
+      {% if post|is_pending %}
+        <div class="card mt-5">
+        <div class="card-body">
+          <h3>Title: {{post.title|safe}}</h3>
+          <small>Author: {{post.author}}</small>
+          <p>content: {{post.content|safe}}</p>
+          <button class="btn btn-secondary"><a href="{% url 'approval' post.pk %}">approve</a></button>
+        </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
 {% endif %}
 {% endblock %}

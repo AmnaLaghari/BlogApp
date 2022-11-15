@@ -1,18 +1,20 @@
 {% extends 'base.html' %}
+{% load poll_extras %}
 {% block content %}
 <h3> Posts </h3>
-
 <ul>
 {% for post in object_list %}
-<li>
-  <a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a> - {{post.author}}
-  {% if request.user == post.author %}
-  <small>
-    -<a href="{% url 'update_post' post.pk %}">Edit </a> - <a href="{% url 'delete_post' post.pk %}">Delete </a>
-  </small>
+  {% if post|is_approved %}
+    <li>
+      <a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a> - {{post.author}}
+      {% if request.user|is_author_of_post:post or request.user|is_admin%}
+      <small>
+        -<a href="{% url 'update_post' post.pk %}">Edit </a> - <a href="{% url 'delete_post' post.pk %}">Delete </a>
+      </small>
+      {% endif %}
+      {{post.content|safe}}
+    </li>
   {% endif %}
-  {{post.content|safe}}
-</li>
 {% empty %}
 <p>No posts yet</p>
 {% endfor %}
