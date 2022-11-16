@@ -25,3 +25,9 @@ a:link {
 .link {
   color: black;
 }
+
+.icons{
+  background: none;
+  border: none;
+  padding: 0;
+}

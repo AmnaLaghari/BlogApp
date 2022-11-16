@@ -66,3 +66,12 @@ def count_approved(posts):
     if post.status == 'approved':
       count +=1
   return count
+
+@register.filter(name='likes')
+def likes(post):
+  return post.likes.count()
+
+@register.filter(name='liked')
+def liked(post,user):
+  return True if user in post.likes.all() else False
+
