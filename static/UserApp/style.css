@@ -31,3 +31,7 @@ a:link {
   border: none;
   padding: 0;
 }
+
+.card-body{
+  border: #000000!important;
+}

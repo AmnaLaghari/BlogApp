@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'PostApp',
     "crispy_forms",
     "crispy_bootstrap5",
+    'CommentsApp',
 ]
 
 MIDDLEWARE = [

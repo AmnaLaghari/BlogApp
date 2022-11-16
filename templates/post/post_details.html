@@ -36,5 +36,22 @@
     </form>
   </div>
 </div>
+
+<div class="m-5">
+  <h2>Comments...</h2>
+  <a href="{% url 'add_comment' post.pk %}">Add comment</a>
+  <div class="card">
+    <div class="card-body" style="background-color: #FDEEDC">
+      {% if not post.comments.all %}
+        No comments yet
+      {% else %}
+        {% for comment in post.comments.all %}
+          <strong>{{comment.commentor}} - {{comment.date_added}}</strong><br>
+          <p>{{comment.body|safe}}</p>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</div>
 {% endif %}
 {% endblock content %}

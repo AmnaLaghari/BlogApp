@@ -26,14 +26,6 @@ class PostDetailView(DetailView):
       messages.error(request, "This post is send for approval")
       return redirect('posts')
     return super().dispatch(request, *args, **kwargs)
-
-  # def get_context_data(self, *args, **kwargs):
-  #   context = super(PostDetailView, self).get_context_data(*args, **kwargs)
-  #   post = get_object_or_404(Post, id=self.kwargs['pk'])
-  #   likes = post.total_likes()
-  #   context['total_likes'] = likes
-  #   return context
-
 @method_decorator(allowed_users(allowed_roles=['user','admin']), name='dispatch')
 class AddPostView(CreateView):
   model = Post
