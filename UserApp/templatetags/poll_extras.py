@@ -22,6 +22,11 @@ def is_user(user):
 def is_author_of_post(user, post):
   return True if user == post.author else False
 
+@register.filter(name='is_not_author_of_post')
+def is_not_author_of_post(user, post):
+  print(post.author)
+  return True if user != post.author else False
+
 @register.filter(name='is_reported')
 def is_reported(post):
   return True if post.reported == True else False

@@ -12,3 +12,9 @@ def is_pending(post):
 
 def is_moderator(user):
   return True if user.groups.all()[0].name == 'moderator' else False
+
+def not_reported(post):
+  return True if post.reported != True else False
+
+def not_pending(post):
+  return True if post.status != 'pending' else False

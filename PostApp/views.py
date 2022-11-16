@@ -7,11 +7,12 @@ from django.http import Http404
 from django.contrib import messages
 from .decorators import allowed_users
 from django.utils.decorators import method_decorator
-from UserApp.utils import is_not_admin, is_not_moderator, not_creator, is_pending
+from UserApp.utils import is_not_admin, is_not_moderator, not_creator, is_pending, is_moderator, not_reported, not_pending
 @method_decorator(allowed_users(allowed_roles=['user','admin']), name='dispatch')
 class PostListView(ListView):
   model = Post
   template_name= 'post/post_list.html'
+  ordering= ['post_date']
 
 @method_decorator(allowed_users(allowed_roles=['user','admin']), name='dispatch')
 class PostDetailView(DetailView):
@@ -58,6 +59,10 @@ class DeletePostView(DeleteView):
     if not_creator(self.request.user,obj)  and is_not_admin(self.request.user) and is_not_moderator(self.request.user):
       messages.error(request, "you are not authorized to delete this post")
       raise Http404("You are not allowed to delete this Post")
+    if is_moderator(self.request.user):
+      if not_reported(obj) and not_pending(obj):
+        messages.error(request, "you are not authorized to delete this post as it is not reported")
+        return redirect('index')
     return super(DeletePostView, self).dispatch(request, *args, **kwargs)
 
   def get_success_url(self):
@@ -88,3 +93,10 @@ def report(request,pk):
 
 def handler404(request, exception):
   return render(request, '404.html')
+
+def keep(request,pk):
+  post = Post.objects.get(pk=pk)
+  post.reported = False
+  post.save()
+  messages.success(request, 'this post has been removed from reported posts')
+  return redirect('index')

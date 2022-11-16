@@ -1,10 +1,9 @@
 from django.shortcuts import render, redirect
-# from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from blog_app import settings
-from django.core.mail import send_mail, EmailMessage
+from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -14,8 +13,10 @@ from django.views import View
 from django.utils.decorators import method_decorator
 from . import models
 from .decorators import unauthenticated_user
-from .forms import SignupForm, SigninForm
+from .forms import SignupForm, SigninForm, UpdateUserForm
 from .utils import is_moderator
+from django.views.generic import UpdateView
+from django.urls import reverse_lazy
 
 def home(request):
   return render(request, 'UserApp/home.html')
@@ -92,7 +93,7 @@ class Signin(View):
 
     if user is not None:
       login(request,user)
-      messages.error(request, "You have logged in successfully")
+      messages.success(request, "You have logged in successfully")
       if is_moderator(request.user):
         return redirect('index')
       return redirect('posts')
@@ -100,3 +101,28 @@ class Signin(View):
       messages.error(request, "Bad credentials")
       return redirect('home')
 
+class UpdateUser(UpdateView):
+  form_class = UpdateUserForm
+  template_name= 'UserApp/edit.html'
+  success_url= reverse_lazy('posts')
+
+  def get_object(self):
+    return self.request.user
+
+  def form_valid(self, form):
+    myuser = self.request.user
+    myuser.is_active = False
+    logout(self.request)
+    messages.success(self.request, 'User updated successfully kindly login again')
+    current_site = get_current_site(self.request)
+    subject = "Confirmation email"
+    message = render_to_string('confirmation_email.html',{
+      'name': myuser.username,
+      'domain': current_site.domain,
+      'uid': urlsafe_base64_encode(force_bytes(myuser.pk)),
+      'token': generate_token.make_token(myuser)
+    })
+    email = EmailMessage(subject, message, settings.EMAIL_HOST_USER, [myuser.email])
+    email.fail_silently = True
+    email.send()
+    return super(UpdateUser, self).form_valid(form)

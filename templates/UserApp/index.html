@@ -7,7 +7,7 @@
   {% if user|is_moderator%}
     <div class="row">
       <div class="col-6">
-        <div class="card">
+        <div class="card m-3">
           <div class="card-header text-center">
             Unapproved posts
           </div>
@@ -19,14 +19,14 @@
                 <h3>Title: {{post.title|safe}}</h3>
                 <small>Author: {{post.author}}</small>
                 <p>content: {{post.content|safe}}</p>
-                <button class="btn btn-secondary"><a href="{% url 'approval' post.pk %}">approve</a></button>
-                <button class="btn btn-secondary"><a href="{% url 'delete_post' post.pk %}">Delete</a></button>
+                <a href="{% url 'approval' post.pk %}"><button class="btn btn-secondary">approve</button></a>
+                <a href="{% url 'delete_post' post.pk %}"><button class="btn btn-secondary">Delete</button></a>
               </div>
             </div>
             {% endif %}
             {% endfor %}
             {% if posts|count_pending == 0 %}
-              <p>No post pending for approval</p>
+              <p>No post, pending for approval</p>
             {% endif %}
           </div>
         </div>
@@ -39,12 +39,13 @@
           <div class="card-body">
             {% for post in posts %}
               {% if post|is_reported %}
-              <div class="card">
+              <div class="card m-3">
                 <div class="card-body">
                   <h3>Title: {{post.title|safe}}</h3>
                   <small>Author: {{post.author}}</small>
                   <p>content: {{post.content|safe}}</p>
-                  <button class="btn btn-secondary"><a href="{% url 'delete_post' post.pk %}">Delete</a></button>
+                  <a href="{% url 'delete_post' post.pk %}"><button class="btn btn-secondary">Delete</button></a>
+                  <a href="{% url 'keep_post' post.pk %}"><button class="btn btn-secondary">Keep</button></a>
                 </div>
               </div>
               {% endif %}
