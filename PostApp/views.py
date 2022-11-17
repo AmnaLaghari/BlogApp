@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 from .models import Post
+from CommentsApp.models import Comment
 from .forms import PostForm
 from django.urls import reverse_lazy, reverse
 from django.http import Http404
@@ -74,8 +75,10 @@ class DeletePostView(DeleteView):
 @allowed_users(allowed_roles=['moderator'])
 def index(request):
   posts = Post.objects.all()
-  context = {'posts': posts}
+  comments = Comment.objects.all()
+  context = {'posts': posts, 'comments': comments}
   return render(request, 'UserApp/index.html', context=context)
+
 
 @allowed_users(allowed_roles=['moderator'])
 def approval(request,pk):
@@ -84,6 +87,7 @@ def approval(request,pk):
   post.save()
   return redirect('index')
 
+@allowed_users(allowed_roles=['user','admin'])
 def report(request,pk):
   post = Post.objects.get(pk=pk)
   post.reported = True
@@ -94,6 +98,7 @@ def report(request,pk):
 def handler404(request, exception):
   return render(request, '404.html')
 
+@allowed_users(allowed_roles=['moderator'])
 def keep(request,pk):
   post = Post.objects.get(pk=pk)
   post.reported = False
@@ -103,11 +108,8 @@ def keep(request,pk):
 
 def LikeView(request,pk):
   post = get_object_or_404(Post, id=request.POST.get('post_id'))
-  liked = False
   if post.likes.filter(id=request.user.id).exists():
     post.likes.remove(request.user)
-    liked = False
   else:
     post.likes.add(request.user)
-    liked = True
   return HttpResponseRedirect(reverse('post_detail',args=[str(pk)]))

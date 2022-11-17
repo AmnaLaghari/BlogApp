@@ -24,7 +24,6 @@ def is_author_of_post(user, post):
 
 @register.filter(name='is_not_author_of_post')
 def is_not_author_of_post(user, post):
-  print(post.author)
   return True if user != post.author else False
 
 @register.filter(name='is_reported')

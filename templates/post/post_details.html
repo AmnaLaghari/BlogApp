@@ -38,8 +38,7 @@
 </div>
 
 <div class="m-5">
-  <h2>Comments...</h2>
-  <a href="{% url 'add_comment' post.pk %}">Add comment</a>
+  <h2>Comments... <a href="{% url 'add_comment' post.pk %}"><button class="btn btn-secondary">Add comment</button></a></h2>
   <div class="card">
     <div class="card-body" style="background-color: #FDEEDC">
       {% if not post.comments.all %}
@@ -47,7 +46,35 @@
       {% else %}
         {% for comment in post.comments.all %}
           <strong>{{comment.commentor}} - {{comment.date_added}}</strong><br>
-          <p>{{comment.body|safe}}</p>
+          <p>
+            {{comment.body|safe}}
+            <a href="{% url 'report_comment' comment.pk%}"><button class='btn btn-secondary justify-content-end'>Report</button></a>
+            <a href="{% url 'add_reply' pk=post.pk pk_comment=comment.pk%}"><button class='btn btn-secondary justify-content-end'>Reply</button></a>
+          </p>
+          <form action="{% url 'like_comment' pk=post.pk pk_comment=comment.pk %}" method="POST">
+            {% csrf_token %}
+            {% if comment|liked:request.user %}
+              <button type='submit', name="comment_id", value="{{ comment.id }}", class="btn btn-secondary"><i class="fa fa-thumbs-up"></i></button>
+            {% else %}
+              <button type='submit', name="comment_id", value="{{ comment.id }}" class="btn btn-secondary"><i class="fa fa-thumbs-o-up"></i></button>
+            {% endif %}
+            - {{comment|likes}} likes
+          </form>
+          {% if comment.replies.count != 0 %}
+            <div class="card m-5">
+              <div class='card-header'><h4>Replies</h4></div>
+              <div class="card-body">
+                {% for reply in comment.replies.all %}
+                  <strong>{{reply.replier}} - {{reply.date_added}}</strong><br>
+                  <p>
+                    {{reply.body|safe}}
+                  </p>
+                  <hr>
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+          <hr>
         {% endfor %}
       {% endif %}
     </div>
