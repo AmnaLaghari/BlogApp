@@ -3,80 +3,107 @@
 {% load static %}
 {% block content %}
 {% if post|is_approved %}
-<div class = 'card cardd m-5'>
-  <div class = 'card-header' style="background-color: #F1A661">
-    <h3>{{post.title}}</h3><hr>
-    <small>by {{post.author}}</small><br>
-    <small>{{post.post_date}}</small>
-  </div>
-  <div class='card-body' style="background-color: #FFD8A9">
-    <p>{{post.content|safe}}</p>
-    {% if request.user|is_author_of_post:post or request.user|is_admin %}
-      <small>
-        <a href="{% url 'update_post' post.pk %}"><button class='btn btn-secondary'>Edit</button> </a>
-        <a href="{% url 'delete_post' post.pk %}"><button class='btn btn-secondary'>Delete </button></a>
-      </small>
-    {% endif %}
-    {% if request.user|is_not_author_of_post:post %}
-      <small>
-        <a href="{% url 'report' post.pk %}"><button class='btn btn-secondary'>Report</button> </a>
-      </small>
-    {% endif %}
-    <a href="{% url 'posts' %}"><button class='btn btn-secondary'>Back</button> </a>
+<div class="row">
+  <div class="col-8">
+    <div class = 'card cardd m-5'>
+      <div class = 'card-header' style="background-color: #F1A661">
+        <h3>{{post.title}}</h3><hr>
+        <small>by {{post.author}}</small><br>
+        <small>{{post.post_date}}</small>
+      </div>
+      <div class='card-body' style="background-color: #FFD8A9">
+        <p>{{post.content|safe}}</p>
+        {% if request.user|is_author_of_post:post or request.user|is_admin %}
+          <small>
+            <a href="{% url 'update_post' post.pk %}"><button class='btn btn-secondary'>Edit</button> </a>
+            <a href="{% url 'delete_post' post.pk %}"><button class='btn btn-secondary'>Delete </button></a>
+          </small>
+        {% endif %}
+        {% if request.user|is_not_author_of_post:post %}
+          <small>
+            <a href="{% url 'report' post.pk %}"><button class='btn btn-secondary'>Report</button> </a>
+          </small>
+        {% endif %}
+        <a href="{% url 'posts' %}"><button class='btn btn-secondary'>Back</button> </a>
 
-    <br><br>
-    <form action="{% url 'like_post' post.pk %}" method="POST">
-      {% csrf_token %}
-      {% if post|liked:request.user %}
-        <button type='submit', name="post_id", value="{{ post.id }}", class="btn btn-secondary"><i class="fa fa-thumbs-up"></i></button>
-      {% else %}
-        <button type='submit', name="post_id", value="{{ post.id }}" class="btn btn-secondary"><i class="fa fa-thumbs-o-up"></i></button>
-      {% endif %}
-      - {{post|likes}} likes
-    </form>
-  </div>
-</div>
+        <br><br>
+        <form action="{% url 'like_post' post.pk %}" method="POST">
+          {% csrf_token %}
+          {% if post|liked:request.user %}
+            <button type='submit', name="post_id", value="{{ post.id }}", class="btn btn-secondary"><i class="fa fa-thumbs-up"></i></button>
+          {% else %}
+            <button type='submit', name="post_id", value="{{ post.id }}" class="btn btn-secondary"><i class="fa fa-thumbs-o-up"></i></button>
+          {% endif %}
+          - {{post|likes}} likes
+        </form>
+      </div>
+    </div>
 
-<div class="m-5">
-  <h2>Comments... <a href="{% url 'add_comment' post.pk %}"><button class="btn btn-secondary">Add comment</button></a></h2>
-  <div class="card">
-    <div class="card-body" style="background-color: #FDEEDC">
-      {% if not post.comments.all %}
-        No comments yet
-      {% else %}
-        {% for comment in post.comments.all %}
-          <strong>{{comment.commentor}} - {{comment.date_added}}</strong><br>
-          <p>
-            {{comment.body|safe}}
-            <a href="{% url 'report_comment' comment.pk%}"><button class='btn btn-secondary justify-content-end'>Report</button></a>
-            <a href="{% url 'add_reply' pk=post.pk pk_comment=comment.pk%}"><button class='btn btn-secondary justify-content-end'>Reply</button></a>
-          </p>
-          <form action="{% url 'like_comment' pk=post.pk pk_comment=comment.pk %}" method="POST">
-            {% csrf_token %}
-            {% if comment|liked:request.user %}
-              <button type='submit', name="comment_id", value="{{ comment.id }}", class="btn btn-secondary"><i class="fa fa-thumbs-up"></i></button>
-            {% else %}
-              <button type='submit', name="comment_id", value="{{ comment.id }}" class="btn btn-secondary"><i class="fa fa-thumbs-o-up"></i></button>
-            {% endif %}
-            - {{comment|likes}} likes
-          </form>
-          {% if comment.replies.count != 0 %}
-            <div class="card m-5">
-              <div class='card-header'><h4>Replies</h4></div>
-              <div class="card-body">
-                {% for reply in comment.replies.all %}
-                  <strong>{{reply.replier}} - {{reply.date_added}}</strong><br>
-                  <p>
-                    {{reply.body|safe}}
-                  </p>
-                  <hr>
-                {% endfor %}
+    <div class="m-5">
+      <h2>Comments... <a href="{% url 'add_comment' post.pk %}"><button class="btn btn-secondary">Add comment</button></a></h2>
+      <div class="card">
+        <div class="card-body" style="background-color: #FDEEDC">
+          {% if not post.comments.all %}
+            No comments yet
+          {% else %}
+            {% for comment in post.comments.all %}
+              <strong>{{comment.commentor}} - {{comment.date_added}}</strong><br>
+              <p>
+                {{comment.body|safe}}
+                <a href="{% url 'report_comment' comment.pk%}"><button class='btn btn-secondary justify-content-end'>Report</button></a>
+                <a href="{% url 'add_reply' pk=post.pk pk_comment=comment.pk%}"><button class='btn btn-secondary justify-content-end'>Reply</button></a>
+              </p>
+              <form action="{% url 'like_comment' pk=post.pk pk_comment=comment.pk %}" method="POST">
+                {% csrf_token %}
+                {% if comment|liked:request.user %}
+                  <button type='submit', name="comment_id", value="{{ comment.id }}", class="btn btn-secondary"><i class="fa fa-thumbs-up"></i></button>
+                {% else %}
+                  <button type='submit', name="comment_id", value="{{ comment.id }}" class="btn btn-secondary"><i class="fa fa-thumbs-o-up"></i></button>
+                {% endif %}
+                - {{comment|likes}} likes
+              </form>
+              {% if comment.replies.count != 0 %}
+                <div class="card m-5">
+                  <div class='card-header'><h4>Replies</h4></div>
+                  <div class="card-body">
+                    {% for reply in comment.replies.all %}
+                      <strong>{{reply.replier}} - {{reply.date_added}}</strong><br>
+                      <p>
+                        {{reply.body|safe}}
+                      </p>
+                      <hr>
+                    {% endfor %}
+                  </div>
+                </div>
+              {% endif %}
+              <hr>
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-4">
+    <div class="card m-5">
+      <div class="card-header" style="background-color: #F1A661">
+        <h3>suggestions</h3>
+      </div>
+      <div class="card-body" style="background-color: #FDEEDC">
+        {% if post.suggestions %}
+          {% for suggestion in post.suggestions.all %}
+            <div class='card m-3'>
+              <div class='card-body'>
+                <strong>{{suggestion.suggestor}} - {{suggestion.date_added}}</strong><br>
+                <p>{{suggestion.body}}</p>
               </div>
             </div>
-          {% endif %}
-          <hr>
-        {% endfor %}
-      {% endif %}
+          {% endfor %}
+        {% else %}
+        no suggestions yet...
+        {% endif %}
+        <a href="{% url 'add_suggestion' post.pk %}"><button class="btn btn-secondary">Add Suggestion</button></a>
+      </div>
     </div>
   </div>
 </div>
