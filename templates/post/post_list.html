@@ -1,20 +1,46 @@
 {% extends 'base.html' %}
+{% load poll_extras %}
 {% block content %}
-<h3> Posts </h3>
-
-<ul>
-{% for post in object_list %}
-<li>
-  <a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a> - {{post.author}}
-  {% if request.user == post.author %}
-  <small>
-    -<a href="{% url 'update_post' post.pk %}">Edit </a> - <a href="{% url 'delete_post' post.pk %}">Delete </a>
-  </small>
-  {% endif %}
-  {{post.content|safe}}
-</li>
-{% empty %}
-<p>No posts yet</p>
-{% endfor %}
-</ul>
+<div class="row">
+  <div class="col-8">
+    {% if object_list|count_approved == 0 %}
+      <p>No posts yet</p>
+    {% else %}
+    {% for post in object_list %}
+      {% if post|is_approved %}
+      <div class="card m-3">
+        <div class='card-header' style="background-color: #F1A661">
+          <h3>{{ post.title }}</h3><hr>
+          <small>by {{post.author}}</small>
+        </div>
+        <div class='card-body' style="background-color: #FDEEDC">
+          <p>{{post.content|safe}}</p>
+          {% if request.user|is_author_of_post:post or request.user|is_admin%}
+          <small>
+            <a href="{% url 'update_post' post.pk %}"><button class='btn btn-secondary'>Edit</button> </a>
+            <a href="{% url 'delete_post' post.pk %}"><button class='btn btn-secondary'>Delete </button></a>
+          </small>
+          {% endif %}
+          <small>
+            <a class="link" href="{% url 'post_detail' post.pk %}"><button class="btn btn-secondary">view</button></a>
+          </small>
+        </div>
+      </div>
+      {% endif %}
+    {% empty %}
+    <p>No posts yet</p>
+    {% endfor %}
+    {% endif %}
+  </div>
+  <div class='col-4'>
+    <div class="card m-3">
+      <div class="card-header" style="background-color: #F1A661">
+        <h3>suggestions</h3>
+      </div>
+      <div class="card-body" style="background-color: #FDEEDC">
+        no siggestions yet
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock content %}

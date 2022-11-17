@@ -1,12 +1,17 @@
 from django.contrib import admin
 from django.urls import path
-from .views import AddPostView, PostListView, PostDetailView, UpdatePostView, DeletePostView
+from .views import AddPostView, PostListView, PostDetailView, UpdatePostView, DeletePostView, keep
 from django.contrib.auth.decorators import login_required
+from . import views
 
 urlpatterns = [
+    path('index/', views.index, name='index'),
+    path('approve/<int:pk>', views.approval, name='approval'),
+    path('report/<int:pk>', views.report, name='report'),
     path('',login_required(PostListView.as_view(), login_url='signin'), name='posts'),
     path('Add_post', login_required(AddPostView.as_view(), login_url='signin'), name='add_post'),
     path('<int:pk>', login_required(PostDetailView.as_view(), login_url='signin'), name='post_detail'),
     path('edit_post/<int:pk>', login_required(UpdatePostView.as_view(), login_url='signin'), name='update_post'),
     path('delete_post/<int:pk>', login_required(DeletePostView.as_view(), login_url='signin'), name='delete_post'),
+    path('keep_post/<int:pk>', login_required(views.keep, login_url='signin'), name='keep_post'),
 ]

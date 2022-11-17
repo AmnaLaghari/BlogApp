@@ -1,3 +1,4 @@
+{% load poll_extras %}
 <nav class="navbar navbar-expand-lg" style="background-color: #FCE0CB">
   <div class="container-fluid">
     {% comment %} <a class="navbar-brand" href="#">Navbar</a> {% endcomment %}
@@ -11,12 +12,17 @@
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href={% url 'signout' %}>Signout</a>
           </li>
+          {% if request.user|is_user or request.user|is_admin%}
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href={% url 'add_post' %}>Add Post</a>
           </li>
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href={% url 'posts' %}>Posts</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href={% url 'edit_user' %}>Edit User</a>
+          </li>
+          {% endif %}
         {% else %}
           <li class="nav-item">
             <a class="nav-link" href={% url 'signin' %}>Signin</a>

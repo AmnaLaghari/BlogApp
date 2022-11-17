@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 {% block content %}
 <div class="card ms-5"  style="width: 70%;">
   <div class="card-header text-center" style="background-color: #F1A661">
-    <strong>Edit Post</strong>
+    <strong>Edit User</strong>
   </div>
   <div class="card-body" style="background-color: #FDEEDC">
     <div class="form-group">
       <form method="post">
         {% csrf_token %}
         {{form.media}}
-        {{ form.as_p}}
+        {{ form|crispy}}
         <button class="btn btn-secondary">Edit</button>
       </form><br>
       <a href="{% url 'posts' %}"><button class="btn btn-secondary">Back</button></a>
