@@ -13,21 +13,6 @@
   {%include "navbar.html"%}
   <div class="container">
     {% include "alerts.html" %}
-    {% comment %} {% block alerts%}
-    {% for message in messages%}
-    {%if message.tag == error%}
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-      <strong>{{message}}</strong>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    {%else%}
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-      <strong>{{message}}</strong>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    {% endif %}
-    {% endfor %}
-    {% endblock alerts%} {% endcomment %}
 
     {% block content %}
     {% endblock %}

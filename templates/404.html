@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class = "align-items-middle">
+  <img src="{% static "UserApp/media/error404.webp" %}" alt="error" style="width:40rem; height:30rem;"/><br>
+  <button class="btn btn-secondary"><a href="{% url 'posts' %}">Back</a></button>
+</div>
+{% endblock content %}

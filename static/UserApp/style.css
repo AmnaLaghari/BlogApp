@@ -14,10 +14,14 @@
 }
 
 .btn:hover{
-  background-color: #f9ab6f;
+  background-color: #e49c66;
 }
 
 a:link {
   text-decoration: none;
   color: black!important;
+}
+
+.link {
+  color: black;
 }

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load poll_extras %}
+{% block content %}
+{% if post|is_approved %}
+<div class = 'card cardd m-5'>
+  <div class = 'card-header' style="background-color: #F1A661">
+    <h3>{{post.title}}</h3><hr>
+    <small>by {{post.author}}</small><br>
+    <small>{{post.post_date}}</small>
+  </div>
+  <div class='card-body' style="background-color: #FFD8A9">
+    <p>{{post.content|safe}}</p>
+    {% if request.user|is_author_of_post:post or request.user|is_admin %}
+      <small>
+        <a href="{% url 'update_post' post.pk %}"><button class='btn btn-secondary'>Edit</button> </a>
+        <a href="{% url 'delete_post' post.pk %}"><button class='btn btn-secondary'>Delete </button></a>
+      </small>
+    {% endif %}
+    {% if request.user|is_not_author_of_post:post %}
+      <small>
+        <a href="{% url 'report' post.pk %}"><button class='btn btn-secondary'>Report</button> </a>
+      </small>
+    {% endif %}
+    <a href="{% url 'posts' %}"><button class='btn btn-secondary'>Back</button> </a>
+  </div>
+</div>
+{% endif %}
+{% endblock content %}
