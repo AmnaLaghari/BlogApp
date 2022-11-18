@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import django_on_heroku
+import dj_database_url
+import os
+
 
 
 
@@ -27,7 +31,7 @@ SECRET_KEY = 'django-insecure-^)%%8m%0h!c(mip5ob289tq)k5r$ghl(at18r-jz5#ydr%swc+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS =  ['localhost', '127.0.0.1']
+ALLOWED_HOSTS =  ['*']
 
 
 # Application definition
@@ -152,3 +156,8 @@ STATICFILES_DIRS = [
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'))
+
+django_on_heroku.settings(locals())
+
