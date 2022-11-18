@@ -1,13 +1,20 @@
-from django.shortcuts import render, redirect
-from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
-from .models import Post
-from .forms import PostForm
-from django.urls import reverse_lazy
-from django.http import Http404
 from django.contrib import messages
-from .decorators import allowed_users
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
-from UserApp.utils import is_not_admin, is_not_moderator, not_creator, is_pending, is_moderator, not_reported, not_pending
+from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
+                                  UpdateView)
+
+from CommentsApp.models import Comment
+from UserApp.utils import (is_moderator, is_not_admin, is_not_moderator,
+                           is_pending, not_creator, not_pending, not_reported)
+
+from .decorators import allowed_users
+from .forms import PostForm
+from .models import Post
+
+
 @method_decorator(allowed_users(allowed_roles=['user','admin']), name='dispatch')
 class PostListView(ListView):
   model = Post
@@ -25,7 +32,6 @@ class PostDetailView(DetailView):
       messages.error(request, "This post is send for approval")
       return redirect('posts')
     return super().dispatch(request, *args, **kwargs)
-
 @method_decorator(allowed_users(allowed_roles=['user','admin']), name='dispatch')
 class AddPostView(CreateView):
   model = Post
@@ -74,8 +80,10 @@ class DeletePostView(DeleteView):
 @allowed_users(allowed_roles=['moderator'])
 def index(request):
   posts = Post.objects.all()
-  context = {'posts': posts}
+  comments = Comment.objects.all()
+  context = {'posts': posts, 'comments': comments}
   return render(request, 'UserApp/index.html', context=context)
+
 
 @allowed_users(allowed_roles=['moderator'])
 def approval(request,pk):
@@ -84,6 +92,7 @@ def approval(request,pk):
   post.save()
   return redirect('index')
 
+@allowed_users(allowed_roles=['user','admin'])
 def report(request,pk):
   post = Post.objects.get(pk=pk)
   post.reported = True
@@ -94,9 +103,18 @@ def report(request,pk):
 def handler404(request, exception):
   return render(request, '404.html')
 
+@allowed_users(allowed_roles=['moderator'])
 def keep(request,pk):
   post = Post.objects.get(pk=pk)
   post.reported = False
   post.save()
   messages.success(request, 'this post has been removed from reported posts')
   return redirect('index')
+
+def LikeView(request,pk):
+  post = get_object_or_404(Post, id=request.POST.get('post_id'))
+  if post.likes.filter(id=request.user.id).exists():
+    post.likes.remove(request.user)
+  else:
+    post.likes.add(request.user)
+  return HttpResponseRedirect(reverse('post_detail',args=[str(pk)]))

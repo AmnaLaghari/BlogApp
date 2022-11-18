@@ -3,10 +3,9 @@
 {% block content %}
 <h3>Welcome to my app</h3>
 {% if request.user.is_authenticated%}
-  <h4>hello {{request.user.username}}</h4>
   {% if user|is_moderator%}
     <div class="row">
-      <div class="col-6">
+      <div class="col-4">
         <div class="card m-3">
           <div class="card-header text-center">
             Unapproved posts
@@ -16,7 +15,7 @@
             {% if post|is_pending %}
             <div class="card">
               <div class="card-body">
-                <h3>Title: {{post.title|safe}}</h3>
+                <h4>Title: {{post.title|safe}}</h4>
                 <small>Author: {{post.author}}</small>
                 <p>content: {{post.content|safe}}</p>
                 <a href="{% url 'approval' post.pk %}"><button class="btn btn-secondary">approve</button></a>
@@ -31,8 +30,34 @@
           </div>
         </div>
       </div>
-      <div class="col-6">
-        <div class="card">
+
+      <div class="col-4">
+        <div class="card m-3">
+          <div class="card-header text-center">
+            Reported comments
+          </div>
+          <div class="card-body">
+            {% for comment in comments %}
+              {% if comment|is_reported %}
+              <div class="card m-3">
+                <div class="card-body">
+                  <h4>commentor {{comment.commentor}}</h4>
+                  <p>content: {{comment.body|safe}}</p>
+                  <a href="{% url 'delete_comment' comment.pk %}"><button class="btn btn-secondary">Delete</button></a>
+                  <a href="{% url 'keep_comment' comment.pk %}"><button class="btn btn-secondary">Keep</button></a>
+                </div>
+              </div>
+              {% endif %}
+            {% endfor %}
+            {% if comments|count_reported == 0 %}
+              <p>No comments reported</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="card m-3">
           <div class="card-header text-center">
             Reported posts
           </div>
@@ -41,7 +66,7 @@
               {% if post|is_reported %}
               <div class="card m-3">
                 <div class="card-body">
-                  <h3>Title: {{post.title|safe}}</h3>
+                  <h4>Title: {{post.title|safe}}</h4>
                   <small>Author: {{post.author}}</small>
                   <p>content: {{post.content|safe}}</p>
                   <a href="{% url 'delete_post' post.pk %}"><button class="btn btn-secondary">Delete</button></a>
@@ -56,6 +81,7 @@
           </div>
         </div>
       </div>
+
     </div>
   {% endif %}
 {% endif %}

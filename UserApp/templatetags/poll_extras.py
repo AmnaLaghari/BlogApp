@@ -24,7 +24,6 @@ def is_author_of_post(user, post):
 
 @register.filter(name='is_not_author_of_post')
 def is_not_author_of_post(user, post):
-  print(post.author)
   return True if user != post.author else False
 
 @register.filter(name='is_reported')
@@ -66,3 +65,12 @@ def count_approved(posts):
     if post.status == 'approved':
       count +=1
   return count
+
+@register.filter(name='likes')
+def likes(post):
+  return post.likes.count()
+
+@register.filter(name='liked')
+def liked(post,user):
+  return True if user in post.likes.all() else False
+
