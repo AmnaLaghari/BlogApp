@@ -78,7 +78,7 @@ class DeletePostView(DeleteView):
       return reverse_lazy('posts')
 
 @allowed_users(allowed_roles=['moderator'])
-def index(request):
+def moderator(request):
   posts = Post.objects.all()
   comments = Comment.objects.all()
   context = {'posts': posts, 'comments': comments}
@@ -86,14 +86,14 @@ def index(request):
 
 
 @allowed_users(allowed_roles=['moderator'])
-def approval(request,pk):
+def approval_post(request,pk):
   post = Post.objects.get(pk=pk)
   post.status = 'approved'
   post.save()
   return redirect('index')
 
 @allowed_users(allowed_roles=['user','admin'])
-def report(request,pk):
+def report_post(request,pk):
   post = Post.objects.get(pk=pk)
   post.reported = True
   post.save()
@@ -104,7 +104,7 @@ def handler404(request, exception):
   return render(request, '404.html')
 
 @allowed_users(allowed_roles=['moderator'])
-def keep(request,pk):
+def keep_post(request,pk):
   post = Post.objects.get(pk=pk)
   post.reported = False
   post.save()
