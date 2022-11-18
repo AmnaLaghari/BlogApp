@@ -17,7 +17,7 @@ class Comment(models.Model):
     return reverse('post_detail', kwargs={'pk':self.post.pk})
 
 class Reply(models.Model):
-  replier = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+  replier = models.ForeignKey(CustomUser, related_name="comments_replier", on_delete=models.CASCADE)
   comment = models.ForeignKey(Comment,related_name="replies", on_delete=models.CASCADE)
   body = models.TextField()
   date_added = models.DateField(auto_now_add=True)

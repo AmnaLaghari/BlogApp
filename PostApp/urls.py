@@ -16,5 +16,5 @@ urlpatterns = [
     path('keep_post/<int:pk>', login_required(views.keep, login_url='signin'), name='keep_post'),
     path('like/<int:pk>', login_required(views.LikeView, login_url='signin'), name='like_post'),
     path('',include('CommentsApp.urls')),
-    path('',include('SuggestionApp.urls')),
+    path('',include('suggestion.urls')),
 ]

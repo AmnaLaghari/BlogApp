@@ -5,7 +5,7 @@
 {% if post|is_approved %}
 <div class="row">
   <div class="col-8">
-    <div class = 'card cardd m-5'>
+    <div class = 'card cardd m-3'>
       <div class = 'card-header' style="background-color: #F1A661">
         <h3>{{post.title}}</h3><hr>
         <small>by {{post.author}}</small><br>
@@ -39,7 +39,7 @@
       </div>
     </div>
 
-    <div class="m-5">
+    <div class="m-3">
       <h2>Comments... <a href="{% url 'add_comment' post.pk %}"><button class="btn btn-secondary">Add comment</button></a></h2>
       <div class="card">
         <div class="card-body" style="background-color: #FDEEDC">
@@ -85,7 +85,7 @@
   </div>
 
   <div class="col-4">
-    <div class="card m-5">
+    <div class="card m-3">
       <div class="card-header" style="background-color: #F1A661">
         <h3>suggestions</h3>
       </div>
@@ -96,6 +96,27 @@
               <div class='card-body'>
                 <strong>{{suggestion.suggestor}} - {{suggestion.date_added}}</strong><br>
                 <p>{{suggestion.body}}</p>
+                {% if request.user|is_author_of_post:post %}
+                <a href="{% url 'delete_suggestion' suggestion.pk%}"><button class='btn btn-secondary justify-content-end'>Reject</button></a>
+                <a href="{% url 'update_post' post.pk%}"><button class='btn btn-secondary justify-content-end'>Resolve</button></a>
+                {% endif %}
+                <a href="{% url 'reply_suggestion' suggestion.pk%}"><button class='btn btn-secondary justify-content-end'>Reply</button></a>
+                {% if suggestion.replies.count != 0 %}
+                  <div class="card m-2">
+                    <div class='card-header'><h6>Replies</h6></div>
+                    <div class="card-body">
+                      {% for reply in suggestion.replies.all %}
+                        <small>
+                          <strong>{{reply.replier}} - {{reply.date_added}}</strong><br>
+                          <p>
+                            {{reply.body|safe}}
+                          </p>
+                        </small>
+                        <hr>
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endif %}
               </div>
             </div>
           {% endfor %}

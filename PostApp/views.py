@@ -1,15 +1,20 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
-from .models import Post
-from CommentsApp.models import Comment
-from .forms import PostForm
-from django.urls import reverse_lazy, reverse
-from django.http import Http404
 from django.contrib import messages
-from .decorators import allowed_users
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
-from UserApp.utils import is_not_admin, is_not_moderator, not_creator, is_pending, is_moderator, not_reported, not_pending
-from django.http import HttpResponseRedirect
+from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
+                                  UpdateView)
+
+from CommentsApp.models import Comment
+from UserApp.utils import (is_moderator, is_not_admin, is_not_moderator,
+                           is_pending, not_creator, not_pending, not_reported)
+
+from .decorators import allowed_users
+from .forms import PostForm
+from .models import Post
+
+
 @method_decorator(allowed_users(allowed_roles=['user','admin']), name='dispatch')
 class PostListView(ListView):
   model = Post

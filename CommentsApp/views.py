@@ -1,15 +1,17 @@
-from django.shortcuts import redirect, get_object_or_404
-from django.views.generic import CreateView, DeleteView
-from PostApp.decorators import allowed_users
-from django.utils.decorators import method_decorator
-from .models import Comment, Reply
 from django.contrib import messages
-from .forms import CommentForm, ReplyForm
-from PostApp.models import Post
-from django.urls import reverse_lazy, reverse
-from django.http import Http404
-from UserApp.utils import is_not_admin, is_not_moderator, not_creator, is_moderator, not_reported, not_pending
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse, reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.generic import CreateView, DeleteView
+
+from PostApp.decorators import allowed_users
+from PostApp.models import Post
+from UserApp.utils import is_moderator, not_reported
+
+from .forms import CommentForm, ReplyForm
+from .models import Comment, Reply
+
 
 # Create your views here.
 @method_decorator(allowed_users(allowed_roles=['user','admin']), name='dispatch')

@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class SuggestionappConfig(AppConfig):
+class SuggestionConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'SuggestionApp'
+    name = 'suggestion'
