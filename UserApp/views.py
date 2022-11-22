@@ -19,6 +19,10 @@ from django.views.generic import UpdateView
 from django.urls import reverse_lazy
 
 def home(request):
+  if request.user.is_authenticated:
+    if is_moderator(request.user):
+      return redirect('index')
+    return redirect('posts')
   return render(request, 'UserApp/home.html')
 
 def signout(request):
@@ -46,13 +50,13 @@ class Signup(View):
     return render(request, 'UserApp/signup.html', context)
 
   def post(self,request):
-    username  = request.POST['username']
-    firstname  = request.POST['first_name']
-    lastname  = request.POST['last_name']
-    email  = request.POST['email']
-    password  = request.POST['password']
-    confirm_password  = request.POST['confirm_password']
-    group = request.POST['groups']
+    username  = request.POST.get('username')
+    firstname  = request.POST.get('first_name')
+    lastname  = request.POST.get('last_name')
+    email  = request.POST.get('email')
+    password  = request.POST.get('password')
+    confirm_password  = request.POST.get('confirm_password')
+    group = request.POST.get('groups')
 
     if password != confirm_password:
       messages.error(request,'Passowrd didnt match')
@@ -86,8 +90,8 @@ class Signin(View):
     return render(request, 'UserApp/signin.html', context)
 
   def post(self, request):
-    username  = request.POST['username']
-    password = request.POST['password']
+    username  = request.POST.get('username')
+    password = request.POST.get('password')
 
     user = authenticate(request, username = username, password = password)
 

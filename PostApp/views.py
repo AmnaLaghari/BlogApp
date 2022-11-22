@@ -1,8 +1,9 @@
 from django.contrib import messages
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
                                   UpdateView)
 
@@ -19,7 +20,7 @@ from .models import Post
 class PostListView(ListView):
   model = Post
   template_name= 'post/post_list.html'
-  ordering= ['post_date']
+  ordering= ['-post_date']
 
 @method_decorator(allowed_users(allowed_roles=['user','admin']), name='dispatch')
 class PostDetailView(DetailView):
@@ -29,7 +30,7 @@ class PostDetailView(DetailView):
   def dispatch(self, request, *args, **kwargs):
     obj = self.get_object()
     if is_pending(obj):
-      messages.error(request, "This post is send for approval")
+      messages.success(request, "This post is send for approval")
       return redirect('posts')
     return super().dispatch(request, *args, **kwargs)
 @method_decorator(allowed_users(allowed_roles=['user','admin']), name='dispatch')
@@ -111,10 +112,19 @@ def keep_post(request,pk):
   messages.success(request, 'this post has been removed from reported posts')
   return redirect('index')
 
-def LikeView(request,pk):
-  post = get_object_or_404(Post, id=request.POST.get('post_id'))
-  if post.likes.filter(id=request.user.id).exists():
-    post.likes.remove(request.user)
-  else:
-    post.likes.add(request.user)
-  return HttpResponseRedirect(reverse('post_detail',args=[str(pk)]))
+class LikeView(View):
+  def post(self, request):
+    result = ''
+    id = (request.POST.get('postid'))
+    post = get_object_or_404(Post, id=id)
+    if post.likes.filter(id=request.user.id).exists():
+      post.likes.remove(request.user)
+      post.like_count -= 1
+      result = post.like_count
+      post.save()
+    else:
+      post.likes.add(request.user)
+      post.like_count += 1
+      result = post.like_count
+      post.save()
+    return JsonResponse({'result': result}, safe=False)

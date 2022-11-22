@@ -27,15 +27,32 @@
         <a href="{% url 'posts' %}"><button class='btn btn-secondary'>Back</button> </a>
 
         <br><br>
-        <form action="{% url 'like_post' post.pk %}" method="POST">
+        <form action="{% url 'like_post' %}" method="POST">
           {% csrf_token %}
-          {% if post|liked:request.user %}
-            <button type='submit', name="post_id", value="{{ post.id }}", class="btn btn-secondary"><i class="fa fa-thumbs-up"></i></button>
-          {% else %}
-            <button type='submit', name="post_id", value="{{ post.id }}" class="btn btn-secondary"><i class="fa fa-thumbs-o-up"></i></button>
-          {% endif %}
-          - {{post|likes}} likes
+          <button type='submit', id="like-button", name="post_id", value="{{ post.id }}", class="btn btn-secondary"><i class="fa fa-thumbs-up"></i></button>
         </form>
+        <span class="" id="like_count">{{post.like_count}}</span>
+        <script>
+          $(document).on('click','#like-button', function(e){
+            e.preventDefault();
+            $.ajax({
+              type: 'POST',
+              url: "{% url 'like_post' %}",
+              data: {
+                postid: $('#like-button').val(),
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                action: 'POST'
+              },
+              success: function(json){
+                document.getElementById("like_count").innerHTML = json['result']
+                console.log(json)
+              },
+              error: function(xhr, errmsf, err){
+
+              }
+            })
+          })
+        </script>
       </div>
     </div>
 

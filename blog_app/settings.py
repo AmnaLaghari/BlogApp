@@ -14,6 +14,10 @@ from pathlib import Path
 import django_on_heroku
 import dj_database_url
 import os
+import environ
+
+env = environ.Env()
+environ.Env.read_env()
 
 
 
@@ -26,12 +30,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^)%%8m%0h!c(mip5ob289tq)k5r$ghl(at18r-jz5#ydr%swc+'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS =  ['*']
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -91,11 +95,11 @@ WSGI_APPLICATION = 'blog_app.wsgi.application'
 DATABASES = {
    'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'blog_app' ,
-        'USER': 'postgres',
-        'PASSWORD': '123456',
-        'HOST': 'localhost',
-        'PORT': '5433',
+        'NAME': env('DATABASE_NAME') ,
+        'USER': env('DATABASE_USER'),
+        'PASSWORD': env('DATABASE_PASS'),
+        'HOST': env('HOST'),
+        'PORT': env('PORT'),
     }
 }
 
@@ -142,11 +146,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST_USER = 'amna.laghari@devsinc.com'
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
+EMAIL_PORT = env('EMAIL_PORT')
 EMAIL_USE_TLS = True
-EMAIL_HOST_PASSWORD = 'aunyunapxmkhhvbk '
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 AUTH_USER_MODEL = 'UserApp.CustomUser'
 
@@ -160,4 +164,3 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'))
 
 django_on_heroku.settings(locals())
-

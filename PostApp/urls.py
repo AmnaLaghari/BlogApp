@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from .views import AddPostView, PostListView, PostDetailView, UpdatePostView, DeletePostView
+from .views import AddPostView, PostListView, PostDetailView, UpdatePostView, DeletePostView, LikeView
 from django.contrib.auth.decorators import login_required
 from . import views
 
@@ -14,7 +14,7 @@ urlpatterns = [
     path('edit_post/<int:pk>', login_required(UpdatePostView.as_view(), login_url='signin'), name='update_post'),
     path('delete_post/<int:pk>', login_required(DeletePostView.as_view(), login_url='signin'), name='delete_post'),
     path('keep_post/<int:pk>', login_required(views.keep_post, login_url='signin'), name='keep_post'),
-    path('like/<int:pk>', login_required(views.LikeView, login_url='signin'), name='like_post'),
+    path('like', login_required(LikeView.as_view(), login_url='signin'), name='like_post'),
     path('',include('CommentsApp.urls')),
     path('',include('suggestion.urls')),
 ]
