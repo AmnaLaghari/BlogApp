@@ -10,16 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-from pathlib import Path
-import django_on_heroku
-import dj_database_url
 import os
+from pathlib import Path
+
+import dj_database_url
+import django_on_heroku
 import environ
 
 env = environ.Env()
 environ.Env.read_env()
-
-
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -58,6 +57,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # 'lockout.middleware.LockoutMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -81,7 +81,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             'libraries':{
-            'poll_extras': 'UserApp.templatetags.poll_extras',}
+                'poll_extras': 'UserApp.templatetags.poll_extras', }
         },
     },
 ]
@@ -93,9 +93,9 @@ WSGI_APPLICATION = 'blog_app.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-   'default': {
+    'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env('DATABASE_NAME') ,
+        'NAME': env('DATABASE_NAME'),
         'USER': env('DATABASE_USER'),
         'PASSWORD': env('DATABASE_PASS'),
         'HOST': env('HOST'),

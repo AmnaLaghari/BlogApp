@@ -1,13 +1,16 @@
 from django import forms
-from .models import Suggestion, Reply
+
+from .models import Reply, Suggestion
+
 
 class SuggestionForm(forms.ModelForm):
-  class Meta:
-    model = Suggestion
-    fields = ['body']
+    class Meta:
+        model = Suggestion
+        fields = ['body']
+
 
 class ReplyForm(forms.ModelForm):
 
-  class Meta:
-    model = Reply
-    fields = ['body']
+    class Meta:
+        model = Reply
+        fields = ['body']
