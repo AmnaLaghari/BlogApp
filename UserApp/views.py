@@ -154,10 +154,10 @@ class Signin(View):
                 request.session['count'] = 1
             else:
                 request.session['count'] += 1
-                if request.session['count'] == 3:
+                if request.session['count'] == 5:
                     print("here")
                     timer = threading.Timer(
-                        20.0, self.locked_out, args=[request])
+                        300.0, self.locked_out, args=[request])
                     timer.start()
                     print('out of timer')
                     messages.error(
