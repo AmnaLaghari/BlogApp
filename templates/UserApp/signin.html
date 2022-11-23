@@ -4,13 +4,19 @@
 <h3>signin</h3>
 
 <form action="/signin/" method="post">
+
   {% csrf_token %}
+  {{request.session.count}}
   <label for="" class="form-label" >Username</label>
   <input type="text" name="username" class="form-control" placeholder="Enter Username"><br>
 
   <label for="" class="form-label" >Password</label>
   <input type="password" name="password" class="form-control" placeholder="Enter Password"><br>
-
-  <button type="submit" class="btn btn-secondary">signin</button>
+  {% if request.session.count == 3 %}
+    <button type="submit" class="btn btn-secondary" disabled>signin</button><br>
+    you are locked out
+  {% else %}
+    <button type="submit" class="btn btn-secondary">signin</button>
+  {% endif %}
 </form>
 {% endblock %}

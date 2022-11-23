@@ -1,3 +1,7 @@
+import threading
+import time
+
+import requests
 from django.contrib import auth, messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -121,6 +125,13 @@ class Signup(View):
 @method_decorator(unauthenticated_user, name='dispatch')
 class Signin(View):
 
+    def locked_out(self, request):
+        print('in locked_out')
+        request.session.flush()
+        messages.success(request, "Your account has been unlocked.")
+        render(request, 'UserApp/signin.html')
+
+
     def get(self, request):
         context = {'form': SigninForm()}
         return render(request, 'UserApp/signin.html', context)
@@ -128,12 +139,6 @@ class Signin(View):
     def post(self, request):
         username = request.POST.get('username')
         password = request.POST.get('password')
-
-        # try:
-        #     user = auth.authenticate(username=username, password=password)
-        # except LockedOut:
-        #     messages.error(
-        #         request, 'Your account has been locked out because of too many failed login attempts.')
 
         user = authenticate(request, username=username, password=password)
 
@@ -145,7 +150,20 @@ class Signin(View):
             return redirect('posts')
         else:
             messages.error(request, "Bad credentials")
-            return redirect('home')
+            if request.session.get('count', 0) == 0:
+                request.session['count'] = 1
+            else:
+                request.session['count'] += 1
+                if request.session['count'] == 3:
+                    print("here")
+                    timer = threading.Timer(
+                        20.0, self.locked_out, args=[request])
+                    timer.start()
+                    print('out of timer')
+                    messages.error(
+                        request, "You cannt signin now, you account is locked.")
+
+            return redirect('signin')
 
 
 class UpdateUser(UpdateView):
