@@ -88,20 +88,14 @@ class Signup(View):
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
         group = request.POST.get('groups')
-
-        if password != confirm_password:
-            messages.error(request, 'Passowrd didnt match')
-            return redirect('home')
         email_check = self.check_user(username)
         password_check = self.check_password(password, confirm_password)
-
         if email_check and password_check:
             myuser = models.CustomUser.objects.create_user(
                 username=username, email=email, password=password, first_name=firstname, last_name=lastname)
-            myuser.groups.set(group)
+            myuser.groups.add(group)
             myuser.is_active = False
             myuser.save()
-
             current_site = get_current_site(request)
             subject = "Confirmation email"
             message = render_to_string('confirmation_email.html', {
@@ -114,7 +108,6 @@ class Signup(View):
                 subject, message, settings.EMAIL_HOST_USER, [myuser.email])
             email.fail_silently = True
             email.send()
-
             messages.success(
                 request, "Your account has been successfully created")
             return redirect('signin')
@@ -126,7 +119,6 @@ class Signup(View):
 class Signin(View):
 
     def locked_out(self, request):
-        print('in locked_out')
         request.session.flush()
         messages.success(request, "Your account has been unlocked.")
         render(request, 'UserApp/signin.html')
@@ -155,13 +147,11 @@ class Signin(View):
             else:
                 request.session['count'] += 1
                 if request.session['count'] == 5:
-                    print("here")
                     timer = threading.Timer(
-                        300.0, self.locked_out, args=[request])
+                        10.0, self.locked_out, args=[request])
                     timer.start()
-                    print('out of timer')
                     messages.error(
-                        request, "You cannt signin now, you account is locked.")
+                        request, "You cannot signin now, you account is locked.")
 
             return redirect('signin')
 

@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     'CommentsApp',
     'suggestion',
+    # 'django_faker',
 ]
 
 MIDDLEWARE = [
@@ -167,4 +168,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
+# FAKER_LOCALE = None     # settings.LANGUAGE_CODE is loaded
+# FAKER_PROVIDERS = None  # faker.DEFAULT_PROVIDERS is loaded (all)
