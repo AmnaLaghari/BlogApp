@@ -4,7 +4,14 @@ from django.urls import include, path
 
 from . import views
 from .views import (AddPostView, DeletePostView, LikeView, PostDetailView,
-                    PostListView, UpdatePostView)
+                    PostListView, UpdatePostView, PostViewSet )
+
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(
+     'api/postviewset', PostViewSet, basename='post'
+)
 
 urlpatterns = [
     path('index/', login_required(views.moderator,
@@ -29,4 +36,4 @@ urlpatterns = [
          login_url='signin'), name='like_post'),
     path('', include('CommentsApp.urls')),
     path('', include('suggestion.urls')),
-]
+]+router.urls

@@ -11,9 +11,13 @@ from UserApp.utils import is_moderator, not_reported
 
 from .forms import CommentForm, ReplyForm
 from .models import Comment, Reply
+from rest_framework import viewsets
+from .serializers import CommentSerializer
+from rest_framework.permissions import IsAuthenticated
+
+from knox.auth import TokenAuthentication
 
 
-# Create your views here.
 @method_decorator(allowed_users(allowed_roles=['user', 'admin']), name='dispatch')
 class AddCommentView(CreateView):
     model = Comment
@@ -83,3 +87,10 @@ def LikeView(request, pk, pk_comment):
     else:
         comment.likes.add(request.user)
     return HttpResponseRedirect(reverse('post_detail', args=[str(pk)]))
+
+
+class CommmentViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer

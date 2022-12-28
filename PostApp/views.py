@@ -14,6 +14,11 @@ from UserApp.utils import (is_moderator, is_not_admin, is_not_moderator,
 from .decorators import allowed_users
 from .forms import PostForm
 from .models import Post
+from rest_framework import viewsets
+from .serializers import PostSerializer
+from rest_framework.permissions import IsAuthenticated
+
+from knox.auth import TokenAuthentication
 
 
 @method_decorator(allowed_users(allowed_roles=['user', 'admin']), name='dispatch')
@@ -140,3 +145,10 @@ class LikeView(View):
             result = post.like_count
             post.save()
         return JsonResponse({'result': result}, safe=False)
+
+
+class PostViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer

@@ -3,7 +3,15 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from . import views
-from .views import AddCommentView, AddReplyView, DeleteCommentView
+from .views import AddCommentView, AddReplyView, DeleteCommentView, CommmentViewSet
+
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(
+     'api/commentviewset', CommmentViewSet, basename='comment'
+)
+
 
 urlpatterns = [
     path('<int:pk>/comments/add_comment', login_required(AddCommentView.as_view(),
@@ -18,4 +26,4 @@ urlpatterns = [
          login_required(views.LikeView, login_url='signin'), name='like_comment'),
     path('<int:pk>/comments/<int:pk_comment>/reply',
          login_required(AddReplyView.as_view(), login_url='signin'), name='add_reply'),
-]
+]+router.urls
