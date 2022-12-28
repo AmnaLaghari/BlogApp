@@ -10,6 +10,11 @@ from UserApp.utils import is_user
 
 from .forms import ReplyForm, SuggestionForm
 from .models import Reply, Suggestion
+from rest_framework import viewsets
+from .serializers import SuggestionSerializer
+from rest_framework.permissions import IsAuthenticated
+
+from knox.auth import TokenAuthentication
 
 
 @method_decorator(allowed_users(allowed_roles=['user', 'admin']), name='dispatch')
@@ -53,3 +58,9 @@ class AddReplyView(CreateView):
         form.instance.suggestion = Suggestion.objects.get(
             pk=self.kwargs.get('pk'))
         return super(AddReplyView, self).form_valid(form)
+
+class SuggestionViewSet(viewsets.ModelViewSet):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+    queryset = Suggestion.objects.all()
+    serializer_class = SuggestionSerializer
