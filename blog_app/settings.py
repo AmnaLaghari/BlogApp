@@ -53,6 +53,9 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     'CommentsApp',
     'suggestion',
+    'rest_framework',
+    'corsheaders',
+    'knox',
 ]
 
 MIDDLEWARE = [
@@ -168,3 +171,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        'knox.auth.TokenAuthentication',
+    ]
+}
