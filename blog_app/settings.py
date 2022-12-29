@@ -32,7 +32,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -54,6 +54,9 @@ INSTALLED_APPS = [
     'CommentsApp',
     'suggestion',
     # 'django_faker',
+    'rest_framework',
+    'corsheaders',
+    'knox',
 ]
 
 MIDDLEWARE = [
@@ -170,3 +173,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # FAKER_LOCALE = None     # settings.LANGUAGE_CODE is loaded
 # FAKER_PROVIDERS = None  # faker.DEFAULT_PROVIDERS is loaded (all)
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        # 'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        'knox.auth.TokenAuthentication',
+    ]
+}

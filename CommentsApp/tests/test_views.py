@@ -4,8 +4,8 @@ from django.urls import reverse
 from PostApp.factories import PostFactory
 from CommentsApp.factories import CommentFactory
 from CommentsApp.forms import CommentForm
-
-
+from faker import Faker
+fake = Faker()
 class TestViews(TestCase):
 
     def setUp(self):
@@ -16,7 +16,7 @@ class TestViews(TestCase):
         self.moderator = UserFactory.create(groups=(moderator_group,))
         self.post1 = PostFactory.create(author=self.user)
         self.form_data = {
-            'body': 'this is my test comment',
+            'body': fake.text(),
             'commentor': self.user,
             'post': self.post1,
         }
@@ -36,7 +36,7 @@ class TestViews(TestCase):
         form = CommentForm(data=self.form_data)
         self.client.login(username=self.user.username, password=user_password)
         response = self.client.post(
-            reverse('add_comment', kwargs={'pk': self.post1.id}), {'body': 'test comment'})
+            reverse('add_comment', kwargs={'pk': self.post1.id}), {'body': fake.text()})
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response,  reverse(
             'post_detail', kwargs={'pk': self.post1.id}))

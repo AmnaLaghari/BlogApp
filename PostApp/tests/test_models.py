@@ -5,7 +5,7 @@ from faker import Faker
 fake = Faker()
 
 
-class TestCustomerModel(TestCase):
+class TestPostModel(TestCase):
 
     def setUp(self):
         group_user = GroupFactory.create()

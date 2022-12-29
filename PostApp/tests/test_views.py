@@ -3,7 +3,8 @@ from UserApp.factories import UserFactory, GroupFactory, user_password
 from django.urls import reverse
 from PostApp.forms import PostForm
 from PostApp.factories import PostFactory
-
+from faker import Faker
+faker = Faker()
 class TestViews(TestCase):
 
     def setUp(self):
@@ -13,8 +14,8 @@ class TestViews(TestCase):
         self.user = UserFactory.create(groups=(group_user,))
         self.moderator = UserFactory.create(groups=(moderator_group,))
         self.form_data = {
-            'title': 'Test post',
-            'content': 'this is my test post',
+            'title': faker.name(),
+            'content': faker.text(),
             'author': self.user,
         }
         self.post1 = PostFactory.create(author = self.user)
@@ -37,7 +38,7 @@ class TestViews(TestCase):
     def test_add_post_view_POST(self):
         form = PostForm(data=self.form_data)
         self.client.login(username= self.user.username, password= user_password)
-        reponse = self.client.post(reverse('add_post'),{'title': 'test post', 'content': 'hey this is my test post'}, format='text/html')
+        reponse = self.client.post(reverse('add_post'),{'title': faker.name(), 'content': faker.text()}, format='text/html')
         self.assertEqual(reponse.status_code, 302)
         self.assertTrue(form.is_valid())
 
