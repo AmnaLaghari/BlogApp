@@ -18,4 +18,5 @@ urlpatterns = [
          login_required(views.LikeView, login_url='signin'), name='like_comment'),
     path('<int:pk>/comments/<int:pk_comment>/reply',
          login_required(AddReplyView.as_view(), login_url='signin'), name='add_reply'),
+    path('event/hook', views.slackMenu, name='event_hook'),
 ]

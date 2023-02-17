@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
@@ -8,9 +8,13 @@ from django.views.generic import CreateView, DeleteView
 from PostApp.decorators import allowed_users
 from PostApp.models import Post
 from UserApp.utils import is_moderator, not_reported
+# from blog_app import settings
 
 from .forms import CommentForm, ReplyForm
 from .models import Comment, Reply
+from slack_sdk import WebClient
+import json
+from django.views.decorators.csrf import csrf_exempt
 
 
 # Create your views here.
@@ -63,7 +67,55 @@ def report(request, pk):
     comment.reported = True
     comment.save()
     messages.success(request, 'this comment has been reported')
+    client = WebClient(token='xoxb-4795048835043-4790654393847-OlKoSpbuZT4GaTer4GatsKnr')
+    message_attachments = [
+        {
+            "fallback": "this does not work?",
+            "color": "#3AA3E3",
+            "attachment_type": 'default',
+            "callback_id": 'xxx',
+            "actions": [
+                {
+                    'name': 'KeepComment',
+                    'text': 'Keep',
+                    'type': 'button',
+                    'value': comment.id,
+                },
+                {
+                    'name': 'DeleteComment',
+                    'text': 'Delete',
+                    'type': 'button',
+                    'value': comment.id,
+                },
+            ]
+        }
+    ]
+    client.chat_postMessage(channel="#a-project", 
+        text="This Comment has been reported. \n " + 'Content: ' + comment.body + "\n", 
+        attachments=message_attachments)
     return redirect('posts')
+
+@csrf_exempt
+def slackMenu(request):
+    jsonText = request.POST.get('payload','NO PAYLOAD')
+    jsondata = json.loads(jsonText)
+    slackToken = str(jsondata['token'])
+    if slackToken != '6M7tgcLNVWRlE9iZWSt0c9B3':
+        return
+    
+    actionName = jsondata['actions'][0]['name']
+    actionValue = jsondata['actions'][0]['value']
+
+    if actionName == 'KeepComment':
+        comment = Comment.objects.get(pk=actionValue)
+        comment.reported = False
+        comment.save()
+        return HttpResponse('Comment Kept')
+            
+    if actionName == 'DeleteComment':
+        comment = Comment.objects.get(pk=actionValue)
+        comment.delete()
+        return HttpResponse('Comment deleted')
 
 
 @allowed_users(allowed_roles=['moderator'])
