@@ -33,6 +33,9 @@ You can deploy the application on any online cloud platform for example heroku j
 python manage.py migrate
 ```
 
+## Slack Integration:
+This app is integrated with slack. When ever a user reports a comment, a message goes to the channel with two button 'keep' or 'delete'. Clicking on any of these you can either keep or delete comments.  
+
 ## Application Link
 
 [BlogApp](http://blogapp213.herokuapp.com/)
